@@ -3,22 +3,10 @@ extern crate web_view;
 use web_view::*;
 
 fn main() {
-    let html = format!(
-        r#"
-    <!doctype html>
-    <html>
-        <body>
-        <h1>Hello, world</h1>
-        <p>Replace me</p>
-        <script>{js}</script>
-        </body>
-    </html>
-    "#,
-        js = include_str!("../www/dist.js")
-    );
+    let html = include_str!("../gui.html");
 
     web_view::builder()
-        .title("Page load example")
+        .title("Overly Repetitive Tedious Software")
         .content(Content::Html(html))
         .size(600, 200)
         .resizable(true)
