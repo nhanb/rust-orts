@@ -1,0 +1,8 @@
+[package]
+name = "rust-orts"
+version = "0.1.0"
+authors = ["nhanb <nhan@nerdyweekly.com>"]
+edition = "2018"
+
+[dependencies]
+web-view = { git = "https://github.com/Boscop/web-view" }
