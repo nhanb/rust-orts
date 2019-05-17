@@ -1,8 +1,11 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import CustomInput as CInput
+import Element as E
+import Element.Input as EInput
+import Html exposing (Html)
+import Player
 
 
 main =
@@ -14,12 +17,22 @@ main =
 
 
 type alias Model =
-    Int
+    { matchDescription : String
+    , player1 : Player.Model
+    , player2 : Player.Model
+    }
 
 
 init : Model
 init =
-    0
+    { matchDescription = "SFV Grand Finals"
+    , player1 = Player.init
+    , player2 =
+        { name = "P2"
+        , country = "JP"
+        , score = 15
+        }
+    }
 
 
 
@@ -27,18 +40,36 @@ init =
 
 
 type Msg
-    = Increment
-    | Decrement
+    = ChangeMatchDescription String
+    | UpdatePlayer1 Player.Msg
+    | UpdatePlayer2 Player.Msg
+    | SwapPlayers
+    | ResetScores
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
+        ChangeMatchDescription val ->
+            { model | matchDescription = val }
 
-        Decrement ->
-            model - 1
+        UpdatePlayer1 playerMsg ->
+            { model | player1 = Player.update playerMsg model.player1 }
+
+        UpdatePlayer2 playerMsg ->
+            { model | player2 = Player.update playerMsg model.player2 }
+
+        SwapPlayers ->
+            { model
+                | player1 = model.player2
+                , player2 = model.player1
+            }
+
+        ResetScores ->
+            { model
+                | player1 = Player.update Player.ResetScore model.player1
+                , player2 = Player.update Player.ResetScore model.player2
+            }
 
 
 
@@ -47,8 +78,36 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
+    E.layout []
+        (E.column [ E.width E.fill ]
+            [ matchDescription model.matchDescription
+            , Player.view "P1" model.player1 UpdatePlayer1
+            , Player.view "P2" model.player2 UpdatePlayer2
+            , buttonsRow model
+            ]
+        )
+
+
+matchDescription : String -> E.Element Msg
+matchDescription description =
+    E.row [ E.width E.fill ]
+        [ CInput.text []
+            { label = EInput.labelLeft [] (E.text "Match description")
+            , text = description
+            , onChange = ChangeMatchDescription
+            , placeholder = Nothing
+            }
+        ]
+
+
+buttonsRow model =
+    E.row [ E.width E.fill ]
+        [ CInput.button []
+            { label = E.text "Swap players"
+            , onPress = Just SwapPlayers
+            }
+        , CInput.button []
+            { label = E.text "Reset scores"
+            , onPress = Just ResetScores
+            }
         ]
