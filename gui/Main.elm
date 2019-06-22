@@ -3,6 +3,7 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 import Browser
 import CustomInput as CInput
 import Element as E
+import Element.Background as EBackground
 import Element.Input as EInput
 import Html exposing (Html)
 import Player
@@ -78,8 +79,8 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    E.layout []
-        (E.column [ E.width E.fill ]
+    E.layout [ E.padding 5, EBackground.color (E.rgb 0.9 0.9 0.9) ]
+        (E.column [ E.width E.fill, E.height E.fill, E.spacing 5 ]
             [ matchDescription model.matchDescription
             , Player.view "P1" model.player1 UpdatePlayer1
             , Player.view "P2" model.player2 UpdatePlayer2
@@ -90,9 +91,9 @@ view model =
 
 matchDescription : String -> E.Element Msg
 matchDescription description =
-    E.row [ E.width E.fill ]
+    E.row [ E.width E.fill, E.spacing 5 ]
         [ CInput.text []
-            { label = EInput.labelLeft [] (E.text "Match description")
+            { label = CInput.labelLeft [] (E.text "Match")
             , text = description
             , onChange = ChangeMatchDescription
             , placeholder = Nothing
@@ -101,8 +102,17 @@ matchDescription description =
 
 
 buttonsRow model =
-    E.row [ E.width E.fill ]
-        [ CInput.button []
+    E.row
+        [ E.width E.fill, E.alignBottom, E.spacing 5 ]
+        [ CInput.primaryButton
+            { label = E.text "Apply"
+            , onPress = Nothing
+            }
+        , CInput.dangerButton
+            { label = E.text "Discard"
+            , onPress = Nothing
+            }
+        , CInput.button []
             { label = E.text "Swap players"
             , onPress = Just SwapPlayers
             }

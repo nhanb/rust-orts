@@ -1,7 +1,8 @@
 module Player exposing (Model, Msg(..), init, update, view)
 
-import Element exposing (Element, column, el, fill, row, text, width)
-import Element.Input as Input
+import CustomInput as CInput
+import Element as E
+import Element.Input as EInput
 
 
 
@@ -68,23 +69,23 @@ update msg model =
 -- VIEWS
 
 
-view : String -> Model -> (Msg -> msg) -> Element msg
+view : String -> Model -> (Msg -> msg) -> E.Element msg
 view label model toMsg =
-    row [ width fill ]
-        [ Input.text []
-            { label = Input.labelLeft [] (text label)
+    E.row [ E.width E.fill, E.spacing 5 ]
+        [ CInput.text []
+            { label = CInput.labelLeft [] (E.text label)
             , text = model.name
             , onChange = toMsg << ChangePlayerName
             , placeholder = Nothing
             }
-        , Input.text []
-            { label = Input.labelHidden (label ++ " country")
+        , CInput.text [ E.width (E.px 50) ]
+            { label = EInput.labelHidden (label ++ " country")
             , text = model.country
             , onChange = toMsg << ChangePlayerCountry
             , placeholder = Nothing
             }
-        , Input.text []
-            { label = Input.labelHidden (label ++ " score")
+        , CInput.text [ E.width (E.px 50) ]
+            { label = EInput.labelHidden (label ++ " score")
             , text = String.fromInt model.score
             , onChange = toMsg << ChangePlayerScore
             , placeholder = Nothing

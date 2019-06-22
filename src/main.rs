@@ -8,7 +8,7 @@ fn main() {
     web_view::builder()
         .title("Overly Repetitive Tedious Software")
         .content(Content::Html(html))
-        .size(600, 200)
+        .size(514, 170)
         .resizable(true)
         .debug(true)
         .user_data(())
